@@ -27,6 +27,15 @@ async def quotes_image(message: Message, state: FSMContext):
     await state.set_state(QuotesState.author)
 
 @quotes_router.message(
+    QuotesState.image, 
+    F.photo
+)
+async def quotes_image_error(message: Message):
+    await message.answer(
+        text="Извините, но чтобы загрузить фотографию, пришлите её как файл!",
+    )
+
+@quotes_router.message(
     QuotesState.author, 
     F.text
 )

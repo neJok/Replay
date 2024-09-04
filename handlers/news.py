@@ -27,6 +27,16 @@ async def news_image(message: Message, state: FSMContext):
     await state.set_state(NewsState.text)
 
 @news_router.message(
+    NewsState.image, 
+    F.photo
+)
+async def news_image_error(message: Message):
+    await message.answer(
+        text="Извините, но чтобы загрузить фотографию, пришлите её как файл!",
+    )
+
+
+@news_router.message(
     NewsState.text, 
     F.text
 )

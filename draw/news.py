@@ -4,7 +4,7 @@ from io import BytesIO
 from asyncio import gather
 
 from .fonts import montserrat_bolditalic
-from .utils import resize_and_crop, round_image
+from .utils import resize_and_crop
 
 async def draw(data: dict):
     img = Image.new('RGBA', (1920, 1920))
@@ -23,33 +23,6 @@ async def draw(data: dict):
             
         with Image.open('src/img/other/news_top.png') as news_top:
             img.paste(news_top, (0, 0), news_top)
-
-    def wrap_text(text, font, max_width):
-        # Разбиваем текст на слова
-        words = text.split()
-        
-        # Переменные для хранения текущей строки и всех строк
-        lines = []
-        current_line = ""
-        
-        for word in words:
-            # Создаем временную строку для измерения ширины
-            test_line = current_line + word + " " if current_line else word
-            # Измеряем ширину строки с учетом текущего шрифта
-            width, _ = font.getsize(test_line)
-            
-            # Если ширина строки превышает максимальную ширину, переносим строку
-            if width > max_width:
-                lines.append(current_line.strip())
-                current_line = word + " "
-            else:
-                current_line = test_line
-        
-        # Добавляем последнюю строку
-        if current_line:
-            lines.append(current_line.strip())
-        
-        return lines
 
     async def draw_text(text):
         offset = 120
