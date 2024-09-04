@@ -4,6 +4,7 @@ kb_menu = ReplyKeyboardMarkup(
     keyboard=[
         [
             KeyboardButton(text="📰 Цитату"),
+            KeyboardButton(text="🗞️ Новость"),
         ],
     ],
     resize_keyboard=True,

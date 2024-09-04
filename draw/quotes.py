@@ -28,8 +28,8 @@ async def draw(data: dict):
             image = image.crop([0, 0, width // 2, height])
             img.paste(image, (0, 75), image)
 
-        with Image.open('src/img/other/quote_top.png') as news_top:
-            img.paste(news_top, (0, 0), news_top)
+        with Image.open('src/img/other/quote_top.png') as quote_top:
+            img.paste(quote_top, (0, 0), quote_top)
 
     async def draw_text(author, text):
         idraw.text((404, 1231), author, colors['black'], montserrat_bold_144)
