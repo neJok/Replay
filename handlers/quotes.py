@@ -1,8 +1,10 @@
+import config
+
 from aiogram import Router, F, Bot
 from aiogram.types import Message, ReplyKeyboardRemove, BufferedInputFile
 from aiogram.fsm.context import FSMContext
 
-from states import QuotesState
+from states import QuotesState, AuthState
 from draw import quotes as quotes_draw
 from keyboards import kb_back
 from .start import cmd_start
@@ -11,6 +13,10 @@ quotes_router = Router()
 
 @quotes_router.message(F.text == '📰 Цитату')
 async def quotes(message: Message, state: FSMContext):
+    if await config.db.users.count_documents({"_id": message.from_user.id}) == 0:
+        await state.set_state(AuthState.password)
+        return await message.answer("Введите пароль от бота:", reply_markup=ReplyKeyboardRemove())
+    
     await message.answer('Отправьте фото для цитаты', reply_markup=kb_back)
     await state.set_state(QuotesState.image)
 
@@ -67,4 +73,4 @@ async def quotes_text(message: Message, state: FSMContext, bot: Bot):
     await message.answer_photo(BufferedInputFile(file.read(), filename='quote.png'))
     await msg.delete()
     await state.clear()
-    await cmd_start(message)
+    await cmd_start(message, state)

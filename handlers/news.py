@@ -1,8 +1,10 @@
+import config
+
 from aiogram import Router, F, Bot
 from aiogram.types import Message, ReplyKeyboardRemove, BufferedInputFile
 from aiogram.fsm.context import FSMContext
 
-from states import NewsState
+from states import NewsState, AuthState
 from draw import news as news_draw
 from keyboards import kb_back
 from .start import cmd_start
@@ -11,6 +13,10 @@ news_router = Router()
 
 @news_router.message(F.text == '🗞️ Новость')
 async def news(message: Message, state: FSMContext):
+    if await config.db.users.count_documents({"_id": message.from_user.id}) == 0:
+        await state.set_state(AuthState.password)
+        return await message.answer("Введите пароль от бота:", reply_markup=ReplyKeyboardRemove())
+    
     await message.answer('Отправьте фото для новости', reply_markup=kb_back)
     await state.set_state(NewsState.image)
 
@@ -55,4 +61,4 @@ async def news_text(message: Message, state: FSMContext, bot: Bot):
     await message.answer_photo(BufferedInputFile(file.read(), filename='news.png'))
     await msg.delete()
     await state.clear()
-    await cmd_start(message)
+    await cmd_start(message, state)
