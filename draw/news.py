@@ -29,7 +29,14 @@ async def draw(data: dict):
 
         x, y = 950, 1300
         for i in range(20, 200)[::-1]:
-            print(i)
+            offset = i
+            if offset < 140:
+                offset = 140
+            elif offset < 170:
+                offset += i * 0.3
+            else:
+                offset += i * 0.1
+
             lines = textwrap.wrap(text, width=round(1920 / (i - 20)))
             if len(lines) * i >= 400:
                 continue
